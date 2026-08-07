@@ -2,8 +2,8 @@ import { Injectable } from '@nestjs/common';
 
 import { PrismaService } from 'src/infrastructure/prisma/prisma.service';
 
-import { DatabaseHealthResponseDto } from './dto/database-health-response.dto';
-import { HealthResponseDto } from './dto/health-response.dto';
+import { DatabaseHealthResponseDto } from './dto/database-health.dto';
+import { HealthResponseDto } from './dto/health.dto';
 
 @Injectable()
 export class HealthService {

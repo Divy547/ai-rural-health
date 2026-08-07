@@ -1,28 +1,18 @@
 import { ApiProperty } from '@nestjs/swagger';
 
-export class HealthResponseDto {
+export class DatabaseHealthResponseDto {
   @ApiProperty({
     example: true,
   })
   success!: boolean;
 
   @ApiProperty({
-    example: 'ok',
+    example: 'connected',
   })
-  status!: string;
+  database!: string;
 
   @ApiProperty({
     example: '2026-08-07T18:30:00.000Z',
   })
   timestamp!: string;
-
-  @ApiProperty({
-    example: 123.45,
-  })
-  uptime!: number;
-
-  @ApiProperty({
-    example: 'development',
-  })
-  environment!: string;
 }

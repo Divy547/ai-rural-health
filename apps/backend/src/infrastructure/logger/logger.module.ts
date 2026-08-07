@@ -13,13 +13,10 @@ import { LoggerModule } from 'nestjs-pino';
         autoLogging: true,
 
         genReqId(req) {
-          const existingRequestId = req.headers['x-request-id'];
+          const requestId = req.headers['x-request-id'];
 
-          if (
-            typeof existingRequestId === 'string' &&
-            existingRequestId.length > 0
-          ) {
-            return existingRequestId;
+          if (typeof requestId === 'string' && requestId.length > 0) {
+            return requestId;
           }
 
           return randomUUID();
@@ -44,38 +41,15 @@ import { LoggerModule } from 'nestjs-pino';
               }
             : undefined,
 
-        serializers: {
-          req(req) {
-            return {
-              id: req.id,
-              method: req.method,
-              url: req.url,
-              ip: req.ip,
-              userAgent: req.headers['user-agent'],
-            };
-          },
-
-          res(res) {
-            return {
-              statusCode: res.statusCode,
-            };
-          },
-
-          err(err) {
-            return {
-              type: err.name,
-              message: err.message,
-              stack: err.stack,
-            };
-          },
-        },
-
-        customSuccessMessage(req, res) {
-          return `${req.method} ${req.url} completed with ${res.statusCode}`;
-        },
-
-        customErrorMessage(req, res, error) {
-          return `${req.method} ${req.url} failed: ${error.message}`;
+        redact: {
+          paths: [
+            'req.headers.authorization',
+            'req.headers.cookie',
+            'req.body.password',
+            'req.body.accessToken',
+            'req.body.refreshToken',
+          ],
+          censor: '[REDACTED]',
         },
       },
     }),

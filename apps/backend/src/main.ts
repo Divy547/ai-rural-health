@@ -8,14 +8,12 @@ import { Logger } from 'nestjs-pino';
 
 import { AppModule } from './app.module';
 import { setupSwagger } from './infrastructure/swagger/swagger.setup';
-
-import { GlobalExceptionFilter } from './common/filters/global-exception.filter';
+import { PrismaService } from './infrastructure/prisma/prisma.service';
 
 async function bootstrap(): Promise<void> {
   const app = await NestFactory.create(AppModule, {
     bufferLogs: true,
   });
-
 
   app.useLogger(app.get(Logger));
 
@@ -23,9 +21,11 @@ async function bootstrap(): Promise<void> {
 
   app.use(helmet());
 
-  app.use(compression());
+  const compressionMiddleware = compression();
+  const cookieParserMiddleware = cookieParser();
 
-  app.use(cookieParser());
+  app.use(compressionMiddleware);
+  app.use(cookieParserMiddleware);
 
   app.enableCors({
     origin: configService.get<string>('app.corsOrigin'),
@@ -50,22 +50,19 @@ async function bootstrap(): Promise<void> {
     }),
   );
 
-
   setupSwagger(app, configService);
 
   const port = configService.get<number>('app.port') ?? 3000;
+
+  app.get(PrismaService).enableShutdownHooks(app);
 
   await app.listen(port);
 
   const logger = app.get(Logger);
 
-  logger.log(
-    `Server running on http://localhost:${port}/api/v1`,
-  );
+  logger.log(`Server running on http://localhost:${port}/api/v1`);
 
-  logger.log(
-    `Swagger available at http://localhost:${port}/api/docs`,
-  );
+  logger.log(`Swagger available at http://localhost:${port}/api/docs`);
 }
 
 void bootstrap();
