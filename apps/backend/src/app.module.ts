@@ -9,6 +9,7 @@ import { HealthModule } from './modules/health/health.module';
 import { APP_FILTER, APP_INTERCEPTOR } from '@nestjs/core/constants';
 import { GlobalExceptionFilter } from './common/filters/global-exception.filter';
 import { ResponseInterceptor } from './common/interceptors/response.interceptor';
+import { AuthModule } from './modules/auth/auth.module';
 
 @Module({
   imports: [
@@ -22,6 +23,7 @@ import { ResponseInterceptor } from './common/interceptors/response.interceptor'
     PrismaModule,
     AppLoggerModule,
     HealthModule,
+    AuthModule,
   ],
   providers: [
     {
