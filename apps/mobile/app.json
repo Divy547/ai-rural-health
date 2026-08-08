@@ -8,9 +8,11 @@
     "scheme": "mobile",
     "userInterfaceStyle": "automatic",
     "ios": {
-      "icon": "./assets/expo.icon"
+      "icon": "./assets/expo.icon",
+      "bundleIdentifier": "com.airuralhealth.mobile"
     },
     "android": {
+      "package": "com.airuralhealth.mobile",
       "adaptiveIcon": {
         "backgroundColor": "#E6F4FE",
         "foregroundImage": "./assets/images/android-icon-foreground.png",
@@ -32,11 +34,20 @@
           "image": "./assets/images/splash-icon.png",
           "imageWidth": 76
         }
-      ]
+      ],
+      "@react-native-google-signin/google-signin"
     ],
     "experiments": {
       "typedRoutes": true,
       "reactCompiler": true
+    },
+    "extra": {
+      "router": {},
+      "googleWebClientId": "528898413925-vjbvpg2b1k5fsonnp9hac79h1ivn703f.apps.googleusercontent.com",
+      "googleAndroidClientId": "528898413925-oken2bivnv9qdthqvebudrua3amucq35.apps.googleusercontent.com",
+      "eas": {
+        "projectId": "bb761de7-7051-4fa1-8f9d-6529c0c14b7f"
+      }
     }
   }
 }

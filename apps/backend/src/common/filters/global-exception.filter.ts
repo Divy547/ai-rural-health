@@ -47,9 +47,20 @@ export class GlobalExceptionFilter implements ExceptionFilter {
     }
 
     if (status >= HttpStatus.INTERNAL_SERVER_ERROR) {
+      const error =
+        exception instanceof Error
+          ? {
+            name: exception.name,
+            message: exception.message,
+            stack: exception.stack,
+          }
+          : {
+            exception,
+          };
+
       this.logger.error(
         {
-          exception,
+          error,
           requestId: request.id,
           method: request.method,
           path: request.originalUrl,

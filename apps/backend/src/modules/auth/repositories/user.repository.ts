@@ -9,32 +9,40 @@ export class UserRepository {
     private readonly prisma: PrismaService,
   ) {}
 
-  async findById(id: string): Promise<User | null> {
+  async findById(
+    id: string,
+  ): Promise<User | null> {
     return this.prisma.user.findUnique({
       where: { id },
     });
   }
 
-  async findByPhone(phone: string): Promise<User | null> {
+  async findByPhone(
+    phone: string,
+  ): Promise<User | null> {
     return this.prisma.user.findUnique({
       where: { phone },
     });
   }
 
-  async findByEmail(email: string): Promise<User | null> {
+  async findByEmail(
+    email: string,
+  ): Promise<User | null> {
     return this.prisma.user.findUnique({
       where: { email },
     });
   }
 
-  async findByGoogleId(googleId: string): Promise<User | null> {
+  async findByGoogleId(
+    googleId: string,
+  ): Promise<User | null> {
     return this.prisma.user.findUnique({
       where: { googleId },
     });
   }
 
   async create(data: {
-    phone: string;
+    phone?: string;
     email?: string;
     googleId?: string;
     fullName?: string;
@@ -63,10 +71,13 @@ export class UserRepository {
     });
   }
 
-  async existsByPhone(phone: string): Promise<boolean> {
-    const count = await this.prisma.user.count({
-      where: { phone },
-    });
+  async existsByPhone(
+    phone: string,
+  ): Promise<boolean> {
+    const count =
+      await this.prisma.user.count({
+        where: { phone },
+      });
 
     return count > 0;
   }

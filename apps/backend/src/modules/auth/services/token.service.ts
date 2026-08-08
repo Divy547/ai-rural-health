@@ -2,12 +2,14 @@ import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { JwtService } from '@nestjs/jwt';
 import * as bcrypt from 'bcrypt';
-import ms, { type StringValue } from 'ms';
+import { createHash } from 'node:crypto';
+import type { StringValue } from 'ms';
 
+import { addDuration } from 'src/common/utils/date.utils';
+
+import { AUTH_CONSTANTS } from '../constants/auth.constants';
 import { JwtPayload } from '../interfaces/jwt-payload.interface';
 import { TokenPair } from '../types/auth.types';
-import { AUTH_CONSTANTS } from '../constants/auth.constants';
-import { addDuration } from 'src/common/utils/date.utils';
 
 @Injectable()
 export class TokenService {
@@ -25,17 +27,19 @@ export class TokenService {
       'auth.jwt.accessSecret',
     );
 
-    this.accessExpiresIn = this.configService.getOrThrow<StringValue>(
-      'auth.jwt.accessExpiresIn',
-    );
+    this.accessExpiresIn =
+      this.configService.getOrThrow<StringValue>(
+        'auth.jwt.accessExpiresIn',
+      );
 
     this.refreshSecret = this.configService.getOrThrow<string>(
       'auth.jwt.refreshSecret',
     );
 
-    this.refreshExpiresIn = this.configService.getOrThrow<StringValue>(
-      'auth.jwt.refreshExpiresIn',
-    );
+    this.refreshExpiresIn =
+      this.configService.getOrThrow<StringValue>(
+        'auth.jwt.refreshExpiresIn',
+      );
   }
 
   async generateAccessToken(
@@ -59,10 +63,11 @@ export class TokenService {
   async generateTokenPair(
     payload: JwtPayload,
   ): Promise<TokenPair> {
-    const [accessToken, refreshToken] = await Promise.all([
-      this.generateAccessToken(payload),
-      this.generateRefreshToken(payload),
-    ]);
+    const [accessToken, refreshToken] =
+      await Promise.all([
+        this.generateAccessToken(payload),
+        this.generateRefreshToken(payload),
+      ]);
 
     return {
       accessToken,
@@ -71,15 +76,18 @@ export class TokenService {
   }
 
   getRefreshTokenExpiryDate(): Date {
-
     return addDuration(this.refreshExpiresIn);
   }
 
   async hashRefreshToken(
     refreshToken: string,
   ): Promise<string> {
-    return bcrypt.hash(
+    const tokenDigest = this.hashRefreshTokenInput(
       refreshToken,
+    );
+
+    return bcrypt.hash(
+      tokenDigest,
       AUTH_CONSTANTS.BCRYPT.SALT_ROUNDS,
     );
   }
@@ -88,22 +96,43 @@ export class TokenService {
     refreshToken: string,
     hashedToken: string,
   ): Promise<boolean> {
-    return bcrypt.compare(refreshToken, hashedToken);
+    const tokenDigest = this.hashRefreshTokenInput(
+      refreshToken,
+    );
+
+    return bcrypt.compare(
+      tokenDigest,
+      hashedToken,
+    );
   }
 
   async verifyAccessToken(
     token: string,
   ): Promise<JwtPayload> {
-    return this.jwtService.verifyAsync<JwtPayload>(token, {
-      secret: this.accessSecret,
-    });
+    return this.jwtService.verifyAsync<JwtPayload>(
+      token,
+      {
+        secret: this.accessSecret,
+      },
+    );
   }
 
   async verifyRefreshToken(
     token: string,
   ): Promise<JwtPayload> {
-    return this.jwtService.verifyAsync<JwtPayload>(token, {
-      secret: this.refreshSecret,
-    });
+    return this.jwtService.verifyAsync<JwtPayload>(
+      token,
+      {
+        secret: this.refreshSecret,
+      },
+    );
+  }
+
+  private hashRefreshTokenInput(
+    refreshToken: string,
+  ): string {
+    return createHash('sha256')
+      .update(refreshToken, 'utf8')
+      .digest('hex');
   }
 }

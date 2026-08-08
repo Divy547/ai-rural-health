@@ -17,14 +17,14 @@ enum OtpPurpose {
 }
 
 model User {
-  id        String   @id @default(cuid())
-  fullName  String?
-  email     String?  @unique
-  phone     String   @unique
-  googleId  String?  @unique
+  id       String  @id @default(cuid())
+  fullName String?
+  email    String? @unique
+  phone    String? @unique
+  googleId String? @unique
 
-  role      Role     @default(USER)
-  language  String?  @default("en")
+  role     Role    @default(USER)
+  language String? @default("en")
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -33,29 +33,29 @@ model User {
 }
 
 model Otp {
-  id         String     @id @default(cuid())
-  phone      String
-  codeHash   String
-  purpose    OtpPurpose @default(LOGIN)
+  id       String     @id @default(cuid())
+  phone    String
+  codeHash String
+  purpose  OtpPurpose @default(LOGIN)
 
-  expiresAt  DateTime
-  createdAt  DateTime   @default(now())
+  expiresAt DateTime
+  createdAt DateTime @default(now())
 
   @@index([phone])
 }
 
 model RefreshToken {
-  id         String   @id @default(cuid())
+  id String @id @default(cuid())
 
-  tokenHash  String
+  tokenHash String
 
-  userId     String
-  user       User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId String
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
 
-  expiresAt  DateTime
-  revokedAt  DateTime?
+  expiresAt DateTime
+  revokedAt DateTime?
 
-  createdAt  DateTime @default(now())
+  createdAt DateTime @default(now())
 
   @@index([userId])
 }

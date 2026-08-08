@@ -5,4 +5,7 @@ allowBuilds:
   '@prisma/client': true
   '@prisma/engines': true
   '@scarf/scarf': true
+  bcrypt: true
+  dtrace-provider: true
   prisma: true
+  unrs-resolver: true

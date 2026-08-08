@@ -15,6 +15,8 @@ import { OtpRepository } from './repositories/otp.repository';
 import { SessionRepository } from './repositories/session.repository';
 
 import { OtpService } from './services/otp.service';
+import { SessionService } from './services/session.service';
+import { GoogleService } from './services/google.service';
 // import { GoogleService } from './services/google.service';
 
 
@@ -35,7 +37,8 @@ import { OtpService } from './services/otp.service';
     TokenService,
     JwtStrategy,
     OtpService,
-    // GoogleService,
+    GoogleService,
+    SessionService,
 
     UserRepository,
     OtpRepository,

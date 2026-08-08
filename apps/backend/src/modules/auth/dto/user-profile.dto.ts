@@ -9,8 +9,15 @@ export class UserProfileDto {
 
   @ApiProperty({
     example: '+919876543210',
+    nullable: true,
   })
-  phone!: string;
+  phone!: string | null;
+
+  @ApiProperty({
+    example: 'divyakaskgupta@gmail.com',
+    nullable: true,
+  })
+  email!: string | null;
 
   @ApiProperty({
     example: 'Divy Akash Gupta',
