@@ -163,7 +163,7 @@ Choose the directory where you keep your projects.
 Clone the repository:
 
 ```bash
-git clone <REPOSITORY_URL>
+git clone https://github.com/Divy547/ai-rural-health.git
 ```
 
 Example:
